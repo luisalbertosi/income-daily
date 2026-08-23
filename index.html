@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon-192.png">
+<title>Luis Income Daily</title>
+<style>
+:root{--bg:#f3f4f6;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.wrap{max-width:720px;margin:auto;padding:18px 14px 40px}h1{font-size:30px;margin:6px 0 2px}.date{color:var(--muted);margin-bottom:14px}
+.card{background:var(--card);border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 1px 2px #0000000d}.card h2{font-size:15px;letter-spacing:.08em;margin:0 0 12px;color:#4b5563}
+.task{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}.task:last-child{border-bottom:0}
+input[type=checkbox]{width:26px;height:26px;margin-top:1px;accent-color:#111827}.task-title{font-weight:750;font-size:18px}.task-sub{font-size:14px;color:var(--muted);margin-top:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}label.small{display:block;font-size:13px;color:var(--muted);font-weight:700;margin-bottom:6px}
+input[type=number],input[type=text]{width:100%;border:1px solid #d1d5db;border-radius:14px;padding:14px;font-size:18px;background:#fff}
+.metric{padding:14px;border-radius:16px;background:#f9fafb}.value{font-size:28px;font-weight:850}.label{font-size:13px;color:var(--muted)}
+.schedule{display:grid;gap:0}.slot{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.slot:last-child{border-bottom:0}.time{font-weight:800}.note{font-size:13px;color:var(--muted);line-height:1.4}
+.install{display:none;width:100%;border:0;border-radius:16px;padding:15px;font-size:17px;font-weight:800;background:#111827;color:#fff;margin:8px 0 4px}
+.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}@media(max-width:520px){.row{grid-template-columns:1fr}.slot{grid-template-columns:84px 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>💰 Income Daily</h1>
+<div class="date" id="todayDate"></div>
+<button id="installBtn" class="install">Install Income Daily</button>
+<div id="installHelp" class="note"></div>
+
+<div class="card"><h2>TODAY'S 7 WINS</h2><div id="tasks"></div></div>
+
+<div class="card">
+<h2>LOGICAAZ — $30/HR</h2>
+<div class="row">
+<div><label class="small" for="hours">Hours worked today</label><input id="hours" type="number" min="0" step=".25" inputmode="decimal" value="0"></div>
+<div><label class="small" for="otherIncome">Other money received today</label><input id="otherIncome" type="number" min="0" step="1" inputmode="decimal" value="0"></div>
+</div>
+<div class="row" style="margin-top:12px">
+<div class="metric"><div class="value" id="logicEarned">$0.00</div><div class="label">LogiCAAZ earned today</div></div>
+<div class="metric"><div class="value" id="todayTotal">$0.00</div><div class="label">Total money today</div></div>
+</div>
+</div>
+
+<div class="card">
+<h2>FOCUSED WORK WINDOW</h2>
+<div class="schedule">
+<div class="slot"><div class="time">9:00</div><div><b>Start + money check</b><br><span class="note">What is closest to getting paid today?</span></div></div>
+<div class="slot"><div class="time">9:15–11:15</div><div><b>LogiCAAZ / paid work</b><br><span class="note">Paid work outranks everything else.</span></div></div>
+<div class="slot"><div class="time">11:15–11:45</div><div><b>5 prospect contacts + follow-ups</b></div></div>
+<div class="slot"><div class="time">11:45–12:30</div><div><b>3 targeted job applications</b></div></div>
+<div class="slot"><div class="time">12:30–1:00</div><div><b>Lunch / reset</b></div></div>
+<div class="slot"><div class="time">1:00–2:00</div><div><b>Paid project work / NeighborLead</b></div></div>
+<div class="slot"><div class="time">2:00–2:20</div><div><b>Wrap up + record money + tomorrow's #1</b></div></div>
+<div class="slot"><div class="time">2:30</div><div><b>Pick up 3-year-old</b></div></div>
+<div class="slot"><div class="time">3:30</div><div><b>Pick up other two kids</b></div></div>
+</div>
+</div>
+
+<div class="card">
+<h2>PROGRESS</h2>
+<div class="row">
+<div class="metric"><div class="value" id="winsCount">0 / 7</div><div class="label">Daily wins completed</div></div>
+<div class="metric"><div class="value" id="weekTotal">$0.00</div><div class="label">This week's recorded income</div></div>
+</div>
+<div class="metric" style="margin-top:12px"><div class="value" id="rollingTotal">$0.00</div><div class="label">Last 30 days recorded income</div></div>
+<div style="margin-top:14px"><label class="small" for="priority">Tomorrow's #1 money priority</label><input id="priority" type="text" placeholder="Example: Finish LogiCAAZ supplier research"></div>
+</div>
+
+<div class="footer">Income Daily v2 • Saves automatically on this device</div>
+</div>
+
+<script>
+const RATE=30;
+const taskList=[
+["logicWork","Do LogiCAAZ paid work","Or identify/propose the next paid LogiCAAZ task."],
+["trackHours","Track LogiCAAZ hours","Record all billable time at $30/hour."],
+["fiveProspects","Contact 5 prospects","Small businesses, personal network, or project leads."],
+["followUps","Follow up leads / quotes","Prioritize anyone already close to saying yes."],
+["twoNL","2 NeighborLead contacts","Follow-up or demo outreach."],
+["threeJobs","Apply to 3 good jobs","Targeted applications only."],
+["recordMoney","Record today's money","Enter hours and any other money received."]
+];
+const now=new Date(),dateKey=now.toISOString().slice(0,10),storeKey="incomeDailyV2";
+document.getElementById("todayDate").textContent=now.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+let store=JSON.parse(localStorage.getItem(storeKey)||'{"days":{}}'); if(!store.days)store.days={};
+if(!store.days[dateKey])store.days[dateKey]={tasks:{},hours:0,otherIncome:0,priority:""}; let day=store.days[dateKey];
+const tasksEl=document.getElementById("tasks");
+for(const [id,title,sub] of taskList){
+ const row=document.createElement("label"); row.className="task";
+ row.innerHTML=`<input type="checkbox" id="${id}"><div><div class="task-title">${title}</div><div class="task-sub">${sub}</div></div>`;
+ tasksEl.appendChild(row); const cb=row.querySelector("input"); cb.checked=!!day.tasks[id];
+ cb.addEventListener("change",()=>{day.tasks[id]=cb.checked;save();render()});
+}
+const hours=document.getElementById("hours"),otherIncome=document.getElementById("otherIncome"),priority=document.getElementById("priority");
+hours.value=day.hours||0;otherIncome.value=day.otherIncome||0;priority.value=day.priority||"";
+hours.addEventListener("input",()=>{day.hours=parseFloat(hours.value)||0;save();render()});
+otherIncome.addEventListener("input",()=>{day.otherIncome=parseFloat(otherIncome.value)||0;save();render()});
+priority.addEventListener("input",()=>{day.priority=priority.value;save()});
+function money(n){return new Intl.NumberFormat(undefined,{style:"currency",currency:"USD"}).format(n||0)}
+function dayIncome(d){return (Number(d.hours)||0)*RATE+(Number(d.otherIncome)||0)}
+function save(){localStorage.setItem(storeKey,JSON.stringify(store))}
+function startOfWeek(d){const x=new Date(d),dow=x.getDay(),diff=dow===0?-6:1-dow;x.setDate(x.getDate()+diff);x.setHours(0,0,0,0);return x}
+function render(){
+ document.getElementById("logicEarned").textContent=money((Number(day.hours)||0)*RATE);
+ document.getElementById("todayTotal").textContent=money(dayIncome(day));
+ document.getElementById("winsCount").textContent=`${taskList.filter(([id])=>day.tasks[id]).length} / 7`;
+ const ws=startOfWeek(now),cut=new Date(now);cut.setDate(cut.getDate()-29);cut.setHours(0,0,0,0);let w=0,r=0;
+ for(const [k,d] of Object.entries(store.days)){const kd=new Date(k+"T00:00:00");if(kd>=ws&&kd<=now)w+=dayIncome(d);if(kd>=cut&&kd<=now)r+=dayIncome(d)}
+ document.getElementById("weekTotal").textContent=money(w);document.getElementById("rollingTotal").textContent=money(r)
+} render();
+
+let deferredPrompt=null;const installBtn=document.getElementById("installBtn"),installHelp=document.getElementById("installHelp");
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;installBtn.style.display="block";installHelp.textContent="Ready to install on your phone."});
+installBtn.addEventListener("click",async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;installBtn.style.display="none"});
+setTimeout(()=>{if(!deferredPrompt&&!window.matchMedia("(display-mode: standalone)").matches)installHelp.textContent='If the install button does not appear, use the browser menu and choose “Add to Home screen” or “Install app.”';},1200);
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
+</script>
+</body></html>

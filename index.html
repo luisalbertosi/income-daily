@@ -69,19 +69,19 @@ input[type=number],input[type=text]{width:100%;border:1px solid #d1d5db;border-r
 <div style="margin-top:14px"><label class="small" for="priority">Tomorrow's #1 money priority</label><input id="priority" type="text" placeholder="Example: Finish LogiCAAZ supplier research"></div>
 </div>
 
-<div class="footer">Income Daily v2 • Saves automatically on this device</div>
+<div class="footer">Income Daily v2.1 • Saves automatically on this device</div>
 </div>
 
 <script>
 const RATE=30;
 const taskList=[
 ["logicWork","Do LogiCAAZ paid work","Or identify/propose the next paid LogiCAAZ task."],
-["trackHours","Track LogiCAAZ hours","Record all billable time at $30/hour."],
-["fiveProspects","Contact 5 prospects","Small businesses, personal network, or project leads."],
-["followUps","Follow up leads / quotes","Prioritize anyone already close to saying yes."],
-["twoNL","2 NeighborLead contacts","Follow-up or demo outreach."],
+["incomeTask","Complete 1 additional income-producing task","Finish something that can lead directly to payment: a quote, paid spreadsheet, proposal, delivery, research task, or sales follow-up."],
+["fiveProspects","Contact 5 new prospects","Reach out to new potential customers for small business projects or services."],
+["followUps","Follow up existing leads / quotes","Contact people you have already spoken with, quoted, or who showed interest."],
+["twoNL","Contact 2 NeighborLead prospects","New outreach or follow-up specifically for NeighborLead."],
 ["threeJobs","Apply to 3 good jobs","Targeted applications only."],
-["recordMoney","Record today's money","Enter hours and any other money received."]
+["recordMoney","Record today's money + set tomorrow's #1","Enter today's LogiCAAZ hours, other income, and your top money priority for tomorrow."]
 ];
 const now=new Date(),dateKey=now.toISOString().slice(0,10),storeKey="incomeDailyV2";
 document.getElementById("todayDate").textContent=now.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric",year:"numeric"});

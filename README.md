@@ -1,18 +1,12 @@
-# Luis Income Daily
+# Luis Income Daily v2.1
 
-Upload the CONTENTS of this package to the ROOT of a GitHub repository.
+Updated checklist:
+- Do LogiCAAZ paid work
+- Complete 1 additional income-producing task
+- Contact 5 new prospects
+- Follow up existing leads / quotes
+- Contact 2 NeighborLead prospects
+- Apply to 3 good jobs
+- Record today's money + set tomorrow's #1
 
-GitHub should show:
-- index.html
-- manifest.webmanifest
-- sw.js
-- README.md
-- icons/
-
-Then go to Settings > Pages:
-- Source: Deploy from a branch
-- Branch: main
-- Folder: /(root)
-- Save
-
-Open the published HTTPS address on your Samsung phone.
+To update GitHub Pages, replace index.html, manifest.webmanifest, sw.js, README.md and the icons folder at the repository root.

@@ -1,7 +1,7 @@
 {
   "name": "Luis Income Daily",
   "short_name": "Income Daily",
-  "description": "Daily income activity tracker",
+  "description": "Daily income activity tracker with weekly review and history",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

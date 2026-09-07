@@ -1,24 +1,12 @@
-# Luis Income Daily v2.2
+# Luis Income Daily v2.3
 
-New in v2.2:
-- Weekly Review tab
-- Weekly income target vs actual
-- LogiCAAZ hours and earnings summary
-- Other income summary
-- Daily wins summary
-- Friday review notes: What worked / What didn't / Focus next week
-- 30-day History tab
+Updates:
+- Fixes the early day rollover by using the phone's LOCAL calendar date instead of UTC.
+- Afternoon LogiCAAZ hours stay on the correct same day.
+- Adds SOJ Church as $2,000/month guaranteed income.
+- Tracks SOJ Sunday service hours and weekday prep/rehearsal hours separately.
+- Weekly Review includes total SOJ hours.
+- History shows both LogiCAAZ and SOJ hours.
+- SOJ monthly pay is not multiplied by hours and should not be re-entered as daily 'other income'.
 
-## Update existing GitHub Pages site
-
-1. Unzip this package.
-2. In your existing GitHub repository, click **Add file > Upload files**.
-3. Upload these items to the repository root:
-   - index.html
-   - manifest.webmanifest
-   - sw.js
-   - README.md
-   - icons folder
-4. Commit changes.
-5. Wait 1-3 minutes for GitHub Pages to republish.
-6. On your Samsung, refresh the site. If the installed app still shows the old version, uninstall the old app icon and reinstall from the HTTPS GitHub Pages site.
+Update GitHub by uploading/replacing index.html, manifest.webmanifest, sw.js, README.md, and icons/ in the repository root.

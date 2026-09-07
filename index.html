@@ -67,12 +67,19 @@ textarea{min-height:84px;resize:vertical}
     <h2>LOGICAAZ — $30/HR</h2>
     <div class="row">
       <div><label class="small" for="hours">Hours worked today</label><input id="hours" type="number" min="0" step=".25" inputmode="decimal" value="0"></div>
-      <div><label class="small" for="otherIncome">Other money received today</label><input id="otherIncome" type="number" min="0" step="1" inputmode="decimal" value="0"></div>
+      <div><label class="small" for="otherIncome">Other money received today (do not enter SOJ monthly pay here)</label><input id="otherIncome" type="number" min="0" step="1" inputmode="decimal" value="0"></div>
     </div>
     <div class="row" style="margin-top:12px">
       <div class="metric"><div class="value" id="logicEarned">$0.00</div><div class="label">LogiCAAZ earned today</div></div>
       <div class="metric"><div class="value" id="todayTotal">$0.00</div><div class="label">Total money today</div></div>
     </div>
+  </div>
+
+  <div class="card">
+    <h2>SOJ CHURCH — $2,000/MONTH</h2>
+    <div class="row"><div class="metric"><div class="value">$2,000</div><div class="label">Guaranteed monthly income</div></div><div class="metric"><div class="value">3.25–3.75</div><div class="label">Typical hours/week</div></div></div>
+    <div class="row" style="margin-top:12px"><div><label class="small" for="sojServiceHours">Service hours today</label><input id="sojServiceHours" type="number" min="0" step=".25" inputmode="decimal" value="0"></div><div><label class="small" for="sojPrepHours">Prep / rehearsal hours today</label><input id="sojPrepHours" type="number" min="0" step=".25" inputmode="decimal" value="0"></div></div>
+    <div class="note" style="margin-top:10px"><b>Normal rhythm:</b> Sunday 9:30–11:15 AM (1.75 hrs) plus about 1.5–2 hours during the week for song selection and rehearsal. Track the hours here; the $2,000 is counted as monthly guaranteed income, not hourly income.</div>
   </div>
 
   <div class="card">
@@ -86,7 +93,7 @@ textarea{min-height:84px;resize:vertical}
       <div class="slot"><div class="time">1:00–2:00</div><div><b>Paid project work / NeighborLead</b></div></div>
       <div class="slot"><div class="time">2:00–2:20</div><div><b>Wrap up + record money + tomorrow's #1</b></div></div>
       <div class="slot"><div class="time">2:30</div><div><b>Pick up 3-year-old</b></div></div>
-      <div class="slot"><div class="time">3:30</div><div><b>Pick up other two kids</b></div></div>
+      <div class="slot"><div class="time">3:30</div><div><b>Pick up other two kids</b></div></div><div class="slot"><div class="time">Later</div><div><b>Optional LogiCAAZ paid work</b><br><span class="note">Add any afternoon/evening LogiCAAZ hours to the same calendar day.</span></div></div>
     </div>
   </div>
 
@@ -110,7 +117,7 @@ textarea{min-height:84px;resize:vertical}
       <div class="metric"><div class="value" id="wkOther">$0.00</div><div class="label">Other income</div></div>
       <div class="metric"><div class="value" id="wkIncome">$0.00</div><div class="label">Total income</div></div>
       <div class="metric"><div class="value" id="wkWins">0 / 35</div><div class="label">Daily wins</div></div>
-      <div class="metric"><div class="value" id="wkDays">0</div><div class="label">Days recorded</div></div>
+      <div class="metric"><div class="value" id="wkDays">0</div><div class="label">Days recorded</div></div><div class="metric"><div class="value" id="wkSOJHours">0</div><div class="label">SOJ hours this week</div></div>
     </div>
     <div style="margin-top:14px">
       <label class="small" for="weeklyTarget">Weekly income target</label>
@@ -142,7 +149,7 @@ textarea{min-height:84px;resize:vertical}
   </div>
 </section>
 
-<div class="footer">Income Daily v2.2 • Saves automatically on this device</div>
+<div class="footer">Income Daily v2.3.1 • Saves automatically on this device</div>
 </div>
 
 <script>
@@ -158,8 +165,9 @@ const taskList=[
 ];
 
 const now=new Date();
-const dateKey=now.toISOString().slice(0,10);
-const storeKey="incomeDailyV22";
+function localDateKey(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${day}`;}
+const dateKey=localDateKey(now);
+const storeKey="incomeDailyV22"; // keep existing key so your v2.2 history is preserved
 document.getElementById("todayDate").textContent=now.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric",year:"numeric"});
 
 let store=JSON.parse(localStorage.getItem(storeKey)||'{"days":{},"weeklyNotes":{},"weeklyTarget":1000}');
@@ -167,7 +175,7 @@ if(!store.days)store.days={};
 if(!store.weeklyNotes)store.weeklyNotes={};
 if(!store.weeklyTarget)store.weeklyTarget=1000;
 
-if(!store.days[dateKey])store.days[dateKey]={tasks:{},hours:0,otherIncome:0,priority:""};
+if(!store.days[dateKey])store.days[dateKey]={tasks:{},hours:0,otherIncome:0,sojServiceHours:0,sojPrepHours:0,priority:""};
 let day=store.days[dateKey];
 
 const tasksEl=document.getElementById("tasks");
@@ -183,9 +191,12 @@ for(const [id,title,sub] of taskList){
 const hours=document.getElementById("hours");
 const otherIncome=document.getElementById("otherIncome");
 const priority=document.getElementById("priority");
-hours.value=day.hours||0; otherIncome.value=day.otherIncome||0; priority.value=day.priority||"";
+const sojServiceHours=document.getElementById("sojServiceHours"); const sojPrepHours=document.getElementById("sojPrepHours");
+hours.value=day.hours||0; otherIncome.value=day.otherIncome||0; sojServiceHours.value=day.sojServiceHours||0; sojPrepHours.value=day.sojPrepHours||0; priority.value=day.priority||"";
 hours.addEventListener("input",()=>{day.hours=parseFloat(hours.value)||0;save();renderAll()});
 otherIncome.addEventListener("input",()=>{day.otherIncome=parseFloat(otherIncome.value)||0;save();renderAll()});
+sojServiceHours.addEventListener("input",()=>{day.sojServiceHours=parseFloat(sojServiceHours.value)||0;save();renderAll()});
+sojPrepHours.addEventListener("input",()=>{day.sojPrepHours=parseFloat(sojPrepHours.value)||0;save();renderAll()});
 priority.addEventListener("input",()=>{day.priority=priority.value;save()});
 
 function money(n){return new Intl.NumberFormat(undefined,{style:"currency",currency:"USD"}).format(n||0)}
@@ -196,7 +207,7 @@ function startOfWeek(d){
   x.setDate(x.getDate()+diff);x.setHours(0,0,0,0);return x
 }
 function weekKey(d){
-  const s=startOfWeek(d);return s.toISOString().slice(0,10)
+  const s=startOfWeek(d);return localDateKey(s)
 }
 function isWeekday(d){const n=d.getDay();return n>=1&&n<=5}
 
@@ -229,7 +240,7 @@ function renderToday(){
 
 function renderWeekly(){
   const ws=startOfWeek(now); const we=new Date(ws);we.setDate(we.getDate()+6);we.setHours(23,59,59,999);
-  let hours=0,other=0,income=0,wins=0,days=0;
+  let hours=0,other=0,income=0,wins=0,days=0,sojHours=0;
   for(const [k,d] of Object.entries(store.days)){
     const kd=new Date(k+"T00:00:00");
     if(kd>=ws&&kd<=we){
@@ -238,6 +249,7 @@ function renderWeekly(){
       other+=Number(d.otherIncome)||0;
       income+=dayIncome(d);
       wins+=taskList.filter(([id])=>d.tasks&&d.tasks[id]).length;
+      sojHours+=(Number(d.sojServiceHours)||0)+(Number(d.sojPrepHours)||0);
     }
   }
   document.getElementById("wkHours").textContent=hours.toFixed(2).replace(/\.00$/,"");
@@ -246,6 +258,7 @@ function renderWeekly(){
   document.getElementById("wkIncome").textContent=money(income);
   document.getElementById("wkWins").textContent=`${wins} / 35`;
   document.getElementById("wkDays").textContent=days;
+  document.getElementById("wkSOJHours").textContent=sojHours.toFixed(2).replace(/\.00$/,"");
   const diff=income-(Number(store.weeklyTarget)||0);
   const diffEl=document.getElementById("targetDiff");
   diffEl.textContent=(diff>=0?"+":"")+money(diff);
